@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  userId    String   @id @default(uuid())
+  name      String
+  mobile    String
+  language  String
+  state     String
+  role      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Crop {
+  cropId    String   @id @default(uuid())
+  userId    String
+  cropName  String
+  quantity  Float
+  price     Float
+  status    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DiseaseDetection {
+  detectionId String   @id @default(uuid())
+  userId      String
+  imageUrl    String
+  diseaseName String
+  solution    String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WeatherAlert {
+  alertId      String   @id @default(uuid())
+  userId       String
+  location     String
+  weatherType  String
+  alertMessage String
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MandiPrice {
+  priceId        String   @id @default(uuid())
+  cropName       String
+  market         String
+  currentPrice   Float
+  predictedPrice Float
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Marketplace {
+  listingId String   @id @default(uuid())
+  farmerId  String
+  buyerId   String?
+  cropId    String
+  quantity  Float
+  amount    Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GovernmentScheme {
+  schemeId    String   @id @default(uuid())
+  schemeName  String
+  eligibility String
+  applyLink   String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ExpenseProfit {
+  recordId  String   @id @default(uuid())
+  farmerId  String
+  expense   Float
+  income    Float
+  profit    Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EquipmentRental {
+  equipmentId   String   @id @default(uuid())
+  ownerId       String
+  equipmentName String
+  rentPrice     Float
+  availability  Boolean
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model RewardLoan {
+  rewardId        String   @id @default(uuid())
+  farmerId        String
+  points          Int
+  loanEligibility Boolean
+  creditScore     Int
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
