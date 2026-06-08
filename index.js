@@ -1,12 +1,16 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const express = require("express");
-const cors = require("cors");
-const api = require("./prisma/config/prisma");
+import express from "express";
+import cors from "cors";
+import bcrypt from "bcrypt";
+import authRoutes from "./routes/authRoutes.js";
+import api from "./prisma/config/prisma.js";
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/", authRoutes);
 
 app.get("/users", async (req, res) => {
   try {
@@ -20,16 +24,25 @@ app.get("/users", async (req, res) => {
 
 app.post("/users", async (req, res) => {
   try {
-    const { name, mobile, language, state, role } = req.body;
+    const { name, phone, state, country, email, password } = req.body;
 
-    if (!name || !mobile || !language || !state || !role) {
+    if (!name || !phone || !state || !country || !email || !password) {
       return res.status(400).json({
-        error: "name, mobile, language, state, and role are required",
+        error: "name, phone, state, country, email, and password are required",
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await api.user.create({
-      data: { name, mobile, language, state, role },
+      data: {
+        name,
+        phone,
+        state,
+        country,
+        email,
+        password: hashedPassword,
+      },
     });
 
     res.status(201).json(user);

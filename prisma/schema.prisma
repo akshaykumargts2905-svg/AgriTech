@@ -9,12 +9,13 @@ datasource db {
 }
 
 model User {
-  userId    String   @id @default(uuid())
+  id        Int      @id @default(autoincrement())
   name      String
-  mobile    String
-  language  String
+  phone     String
   state     String
-  role      String
+  country   String
+  email     String   @unique
+  password  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
