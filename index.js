@@ -21,6 +21,15 @@ app.get("/users", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch users" });
   }
 });
+app.get("/faultyroute", async (req, res) => {
+  try {
+    // Simulate an error
+    throw new Error("Simulated error for testing");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
 app.post("/users", async (req, res) => {
   try {
