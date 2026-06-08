@@ -22,19 +22,6 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.post("/newroute", async (req, res) => {
-  try {
-    const { data } = req.body;
-
-    if (!data) {
-      return res.status(400).json({ error: "Data is required" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
-
 app.post("/users", async (req, res) => {
   try {
     const { name, phone, state, country, email, password } = req.body;
