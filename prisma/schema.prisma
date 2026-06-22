@@ -19,6 +19,15 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  communityPosts    CommunityPost[]
+  communityComments CommunityComment[]
+  videoComments     VideoComment[]
+  videoLikes        VideoLike[]
+  rewardAccount     RewardAccount?
+  rewardTransactions RewardTransaction[]
+  loanApplications  LoanApplication[]
+  loanRepayments    LoanRepayment[]
 }
 
 model Weather {
@@ -165,4 +174,137 @@ model RewardLoan {
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model CommunityPost {
+  postId    String             @id @default(uuid())
+  farmerId  Int
+  title     String
+  content   String
+  imageUrl  String?
+  videoUrl  String?
+  farmer    User               @relation(fields: [farmerId], references: [id])
+  comments  CommunityComment[]
+  likes     CommunityLike[]
+
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}
+
+model CommunityComment {
+  commentId String        @id @default(uuid())
+  postId    String
+  farmerId  Int
+  comment   String
+  post      CommunityPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  farmer    User          @relation(fields: [farmerId], references: [id])
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model CommunityLike {
+  likeId    String        @id @default(uuid())
+  postId    String
+  farmerId  Int
+  post      CommunityPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
+
+  createdAt DateTime      @default(now())
+
+  @@unique([postId, farmerId])
+}
+
+model Video {
+  videoId     String         @id @default(uuid())
+  farmerId    Int?
+  title       String
+  description String?
+  videoUrl    String
+  thumbnailUrl String?
+  category    String?
+  comments    VideoComment[]
+  likes       VideoLike[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model VideoComment {
+  commentId String   @id @default(uuid())
+  videoId   String
+  farmerId  Int
+  comment   String
+  video     Video    @relation(fields: [videoId], references: [videoId], onDelete: Cascade)
+  farmer    User     @relation(fields: [farmerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VideoLike {
+  likeId    String   @id @default(uuid())
+  videoId   String
+  farmerId  Int
+  video     Video    @relation(fields: [videoId], references: [videoId], onDelete: Cascade)
+  farmer    User     @relation(fields: [farmerId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([videoId, farmerId])
+}
+
+model RewardAccount {
+  accountId String @id @default(uuid())
+  farmerId  Int    @unique
+  points    Int    @default(0)
+  farmer    User   @relation(fields: [farmerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RewardTransaction {
+  transactionId String @id @default(uuid())
+  farmerId      Int
+  points        Int
+  reason        String
+  referenceType String?
+  referenceId   String?
+  farmer        User   @relation(fields: [farmerId], references: [id])
+
+  createdAt     DateTime @default(now())
+}
+
+model LoanApplication {
+  loanId       String          @id @default(uuid())
+  farmerId     Int
+  amount       Float
+  purpose      String
+  durationMonths Int
+  status       LoanStatus      @default(PENDING)
+  creditScore  Int
+  documentUrl  String?
+  remarks      String?
+  farmer       User            @relation(fields: [farmerId], references: [id])
+  repayments   LoanRepayment[]
+
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model LoanRepayment {
+  repaymentId String          @id @default(uuid())
+  loanId      String
+  farmerId    Int
+  amount      Float
+  paidAt      DateTime        @default(now())
+  loan        LoanApplication @relation(fields: [loanId], references: [loanId], onDelete: Cascade)
+  farmer      User            @relation(fields: [farmerId], references: [id])
+}
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REPAID
 }
