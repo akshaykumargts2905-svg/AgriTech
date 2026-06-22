@@ -5,25 +5,38 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model User {
   id        Int      @id @default(autoincrement())
   name      String
+  email     String   @unique
+  password  String
   phone     String
   state     String
   country   String
-  email     String   @unique
-  password  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  crops              Crop[]
+  diseaseDetections  DiseaseDetection[]
+  weatherAlerts      WeatherAlert[]
+  notifications      Notification[]
+  expenseProfits     ExpenseProfit[]
+  equipmentRentals   EquipmentRental[]
+  rewardLoans        RewardLoan[]
+
+  farmerListings     Marketplace[] @relation("FarmerListings")
+  buyerPurchases     Marketplace[] @relation("BuyerPurchases")
 }
 
 model Crop {
   cropId    String   @id @default(uuid())
-  userId    String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   cropName  String
   quantity  Float
   price     Float
@@ -31,32 +44,47 @@ model Crop {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  marketplaceListings Marketplace[]
+
+  @@index([userId])
 }
 
 model DiseaseDetection {
   detectionId String   @id @default(uuid())
-  userId      String
+
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   imageUrl    String
   diseaseName String
   solution    String
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model WeatherAlert {
   alertId      String   @id @default(uuid())
-  userId       String
+
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   location     String
   weatherType  String
   alertMessage String
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model MandiPrice {
   priceId        String   @id @default(uuid())
+
   cropName       String
   market         String
   currentPrice   Float
@@ -64,22 +92,37 @@ model MandiPrice {
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([cropName])
+  @@index([market])
 }
 
 model Marketplace {
-  listingId String   @id @default(uuid())
-  farmerId  String
-  buyerId   String?
+  listingId String @id @default(uuid())
+
+  farmerId  Int
+  farmer    User @relation("FarmerListings", fields: [farmerId], references: [id])
+
+  buyerId   Int?
+  buyer     User? @relation("BuyerPurchases", fields: [buyerId], references: [id])
+
   cropId    String
+  crop      Crop @relation(fields: [cropId], references: [cropId], onDelete: Cascade)
+
   quantity  Float
   amount    Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([farmerId])
+  @@index([buyerId])
+  @@index([cropId])
 }
 
 model GovernmentScheme {
   schemeId    String   @id @default(uuid())
+
   schemeName  String
   eligibility String
   applyLink   String
@@ -90,33 +133,107 @@ model GovernmentScheme {
 
 model ExpenseProfit {
   recordId  String   @id @default(uuid())
-  farmerId  String
+
+  farmerId  Int
+  farmer    User     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
   expense   Float
   income    Float
   profit    Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([farmerId])
 }
 
 model EquipmentRental {
   equipmentId   String   @id @default(uuid())
-  ownerId       String
+
+  ownerId       Int
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
   equipmentName String
   rentPrice     Float
-  availability  Boolean
+  availability  Boolean  @default(true)
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([ownerId])
 }
 
 model RewardLoan {
   rewardId        String   @id @default(uuid())
-  farmerId        String
-  points          Int
-  loanEligibility Boolean
-  creditScore     Int
+
+  farmerId        Int
+  farmer          User     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
+  points          Int      @default(0)
+  loanEligibility Boolean  @default(false)
+  creditScore     Int      @default(0)
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([farmerId])
+}
+
+model FarmingTip {
+  id        Int      @id @default(autoincrement())
+
+  title     String
+  crop      String
+  tip       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([crop])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title     String
+  message   String
+  read      Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model PasswordResetOtp {
+  id        Int      @id @default(autoincrement())
+
+  email     String
+  otp       String
+  verified  Boolean  @default(false)
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Weather {
+  id          Int      @id @default(autoincrement())
+
+  location    String
+  temperature Float
+  condition   String
+  humidity    Int
+  advice      String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([location])
 }
