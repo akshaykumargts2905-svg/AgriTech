@@ -135,7 +135,7 @@ app.post("/equipments/add", async (req, res) => {
 
     const equipment = await api.equipmentRental.create({
       data: {
-        ownerId,
+        ownerId: Number(ownerId),
         equipmentName,
         rentPrice: parseFloat(rentPrice),
         availability: availability !== undefined ? availability : true,
@@ -240,10 +240,10 @@ app.post("/crop/add", async (req, res) => {
 
     const crop = await api.crop.create({
       data: {
-        userId,
+        userId: Number(userId),
         cropName,
-        quantity,
-        price,
+        quantity: Number(quantity),
+        price: Number(price),
         status,
       },
     });
@@ -265,8 +265,8 @@ app.post("/crop/update", async (req, res) => {
       },
       data: {
         cropName,
-        quantity,
-        price,
+        quantity: quantity !== undefined ? Number(quantity) : undefined,
+        price: price !== undefined ? Number(price) : undefined,
         status,
       },
     });
@@ -284,10 +284,10 @@ app.post("/crop-records/add", async (req, res) => {
 
     const record = await api.crop.create({
       data: {
-        userId,
+        userId: Number(userId),
         cropName,
-        quantity,
-        price,
+        quantity: Number(quantity),
+        price: Number(price),
         status,
       },
     });

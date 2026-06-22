@@ -6,7 +6,7 @@ const calculateCreditScore = async (farmerId) => {
   });
 
   const profitRecords = await api.expenseProfit.findMany({
-    where: { farmerId: String(farmerId) },
+    where: { farmerId },
   });
 
   const totalProfit = profitRecords.reduce((sum, record) => sum + record.profit, 0);
