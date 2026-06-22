@@ -93,6 +93,7 @@ export const signup = async (req, res) => {
     });
 
     return res.status(201).json({
+      success: true,
       message: "User created successfully",
       token: createToken(user.id),
       user,
@@ -100,6 +101,7 @@ export const signup = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
+      success: false,
       error: "Failed to create user",
     });
   }
@@ -147,6 +149,7 @@ export const login = async (req, res) => {
     });
   }
 };
+
 
 export const getProfile = async (req, res) => {
   try {
