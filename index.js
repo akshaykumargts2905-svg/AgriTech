@@ -2,54 +2,22 @@ import "dotenv/config";
 
 import express from "express";
 import cors from "cors";
-import bcrypt from "bcrypt";
 import authRoutes from "./routes/authRoutes.js";
-import api from "./prisma/config/prisma.js";
+import snehaRoutes from "./routes/snehaRoutes.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use("/", authRoutes);
+app.use("/", snehaRoutes);
 
-app.get("/users", async (req, res) => {
-  try {
-    const users = await api.user.findMany();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-});
-
-app.post("/users", async (req, res) => {
-  try {
-    const { name, phone, state, country, email, password } = req.body;
-
-    if (!name || !phone || !state || !country || !email || !password) {
-      return res.status(400).json({
-        error: "name, phone, state, country, email, and password are required",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await api.user.create({
-      data: {
-        name,
-        phone,
-        state,
-        country,
-        email,
-        password: hashedPassword,
-      },
-    });
-
-    res.status(201).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create user" });
-  }
+app.get("/", (req, res) => {
+  res.json({
+    message: "AgriTech API is running",
+    owner: "Sneha",
+    modules: ["Authentication & Profile", "Weather & Farming", "Notifications"],
+  });
 });
 
 const PORT = process.env.PORT || 3000;

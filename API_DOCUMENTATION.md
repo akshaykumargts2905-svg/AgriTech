@@ -72,6 +72,13 @@ This document describes the available REST APIs for the AgriTech backend. The AP
 - `GET /farming-tips`
   - Retrieve farming tips and guidance.
 
+### POST APIs
+
+- `POST /weather/add`
+  - Add weather data for a location.
+- `POST /farming-tip/add`
+  - Add farming tips and guidance for a crop.
+
 ---
 
 ## 4. Equipment Rental
@@ -195,6 +202,8 @@ This document describes the available REST APIs for the AgriTech backend. The AP
 
 - `POST /notification/send`
   - Send a notification to a user or group.
+- `POST /notification/read`
+  - Mark a notification as read.
 
 ---
 
@@ -203,3 +212,4 @@ This document describes the available REST APIs for the AgriTech backend. The AP
 - `POST /verify-otp` is expected to verify one-time passwords sent via email, typically using NodeMailer or a similar email service.
 - All endpoints that require authentication should enforce authorization and return appropriate HTTP status codes.
 - Use consistent request/response formats for success and error payloads.
+- Configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` in `.env` to send OTP emails. Without SMTP config, OTP is returned in the API response for development testing.
