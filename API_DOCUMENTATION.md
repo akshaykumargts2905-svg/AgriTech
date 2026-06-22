@@ -25,7 +25,7 @@ This document describes the available REST APIs for the AgriTech backend. The AP
 - `POST /signup`
   - Register a new user account.
 - `POST /login`
-  - Authenticate a user and return an access token.
+  - Authenticate a user with email/password and return user details.
 - `POST /forgot-password`
   - Initiate password recovery by email.
 - `POST /verify-otp`
@@ -143,6 +143,10 @@ This document describes the available REST APIs for the AgriTech backend. The AP
   - Add a comment to a video.
 - `POST /post/create`
   - Create a new community post.
+- `POST /post/comment`
+  - Add a comment to a community post.
+- `POST /post/like`
+  - Like a community post.
 
 ---
 
@@ -152,8 +156,12 @@ This document describes the available REST APIs for the AgriTech backend. The AP
 
 - `GET /reward-points`
   - Retrieve the authenticated user's reward point balance.
+- `GET /reward-points/:farmerId`
+  - Retrieve reward point balance for a specific farmer.
 - `GET /reward-history`
   - Retrieve the user's reward transaction history.
+- `GET /reward-history/:farmerId`
+  - Retrieve reward transaction history for a specific farmer.
 - `GET /leaderboard`
   - Retrieve the reward leaderboard.
 
@@ -172,8 +180,14 @@ This document describes the available REST APIs for the AgriTech backend. The AP
 
 - `GET /loan-status`
   - Retrieve the current loan status for the authenticated user.
+- `GET /loan-status/:farmerId`
+  - Retrieve loan status for a specific farmer.
 - `GET /loan-history`
   - Retrieve the user's loan history.
+- `GET /loan/eligibility`
+  - Check loan eligibility using farmer reward points and profit records.
+- `GET /loan/eligibility/:farmerId`
+  - Check loan eligibility for a specific farmer.
 
 ### POST APIs
 
@@ -181,6 +195,13 @@ This document describes the available REST APIs for the AgriTech backend. The AP
   - Submit a loan application.
 - `POST /loan/document-upload`
   - Upload documents required for a loan application.
+- `POST /loan/:loanId/repayment`
+  - Record a loan repayment.
+
+### PATCH APIs
+
+- `PATCH /loan/:loanId/status`
+  - Update loan application status.
 
 ---
 

@@ -55,3 +55,45 @@ export const signup = async (req, res) => {
     });
   }
 };
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: "email and password are required",
+      });
+    }
+
+    const user = await api.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        error: "Invalid email or password",
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        error: "Invalid email or password",
+      });
+    }
+
+    const { password: _password, ...userWithoutPassword } = user;
+
+    return res.json({
+      message: "Login successful",
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "Failed to login",
+    });
+  }
+};
