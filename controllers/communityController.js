@@ -40,7 +40,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-export const getPosts = async (_req, res) => {
+export const  getPosts = async (_req, res) => {
   try {
     const posts = await api.communityPost.findMany({
       orderBy: { createdAt: "desc" },

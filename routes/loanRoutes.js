@@ -15,7 +15,6 @@ router.get("/loan-history", getLoanStatus);
 router.get("/loan-history/:farmerId", getLoanStatus);
 router.get("/loan/eligibility", getLoanEligibility);
 router.get("/loan/eligibility/:farmerId", getLoanEligibility);
-
 router.post("/loan/apply", applyLoan);
 router.post("/loan/:loanId/repayment", addRepayment);
 router.patch("/loan/:loanId/status", updateLoanStatus);
