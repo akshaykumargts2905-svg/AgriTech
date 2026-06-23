@@ -20,20 +20,12 @@ const createToken = (userId) => {
   });
 };
 
-const getAuthenticatedUserId = (req) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader?.startsWith("Bearer ")) {
-    return null;
-  }
-
-  const token = authHeader.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.JWT_SECRET || "agritech-secret");
-  return decoded.userId;
-};
-
 const sendOtpEmail = async (email, otp) => {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (
+    !process.env.SMTP_HOST ||
+    !process.env.SMTP_USER ||
+    !process.env.SMTP_PASS
+  ) {
     console.log(`Password reset OTP for ${email}: ${otp}`);
     return false;
   }
@@ -149,7 +141,6 @@ export const login = async (req, res) => {
     });
   }
 };
-
 
 export const getProfile = async (req, res) => {
   try {
@@ -308,11 +299,7 @@ export const resetPassword = async (req, res) => {
       orderBy: { createdAt: "desc" },
     });
 
-    if (
-      !savedOtp ||
-      !savedOtp.verified ||
-      savedOtp.expiresAt < new Date()
-    ) {
+    if (!savedOtp || !savedOtp.verified || savedOtp.expiresAt < new Date()) {
       return res.status(400).json({
         error: "OTP verification is required",
       });

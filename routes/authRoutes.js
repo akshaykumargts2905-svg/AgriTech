@@ -20,9 +20,12 @@ router.get("/user/:id", getUserById);
 
 router.post("/signup", signup);
 router.post("/login", login);
+
+//We need to wire actual forget password logic here.
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
+
 router.post("/profile/create", createProfile);
 router.post("/profile/update", updateProfile);
 
