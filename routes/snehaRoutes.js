@@ -8,7 +8,7 @@ import {
   markNotificationRead,
   sendNotification,
 } from "../controllers/snehaController.js";
-
+///change
 const router = express.Router();
 
 router.get("/weather", getWeather);
