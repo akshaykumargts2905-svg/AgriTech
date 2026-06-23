@@ -3,41 +3,28 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  phone     String
-  state     String
-  country   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // crop-management relations
-  crops              Crop[]
-  diseaseDetections  DiseaseDetection[]
-  weatherAlerts      WeatherAlert[]
-  expenseProfits     ExpenseProfit[]
-  equipmentRentals   EquipmentRental[]
-  rewardLoans        RewardLoan[]
-  farmerListings     Marketplace[] @relation("FarmerListings")
-  buyerPurchases     Marketplace[] @relation("BuyerPurchases")
-
-  // community / video / reward / loan relations
-  communityPosts     CommunityPost[]
+  name               String
+  state              String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  country            String
+  email              String              @unique
+  id                 Int                 @id @default(autoincrement())
+  password           String
+  phone              String
   communityComments  CommunityComment[]
-  videoComments      VideoComment[]
-  videoLikes         VideoLike[]
-  rewardAccount      RewardAccount?
-  rewardTransactions RewardTransaction[]
+  communityPosts     CommunityPost[]
   loanApplications   LoanApplication[]
   loanRepayments     LoanRepayment[]
+  rewardAccount      RewardAccount?
+  rewardTransactions RewardTransaction[]
+  videoComments      VideoComment[]
+  videoLikes         VideoLike[]
 }
 
 model Weather {
@@ -47,7 +34,6 @@ model Weather {
   condition   String
   humidity    Int
   advice      String
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -57,7 +43,6 @@ model FarmingTip {
   title     String
   crop      String
   tip       String
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -68,7 +53,6 @@ model Notification {
   title     String
   message   String
   read      Boolean  @default(false)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -79,7 +63,6 @@ model PasswordResetOtp {
   otp       String
   verified  Boolean  @default(false)
   expiresAt DateTime
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -88,149 +71,93 @@ model PasswordResetOtp {
 
 model Crop {
   cropId    String   @id @default(uuid())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  userId    String
   cropName  String
   quantity  Float
   price     Float
   status    String
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  marketplaceListings Marketplace[]
-
-  @@index([userId])
 }
 
 model DiseaseDetection {
   detectionId String   @id @default(uuid())
-
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  userId      String
   imageUrl    String
   diseaseName String
   solution    String
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@index([userId])
 }
 
 model WeatherAlert {
   alertId      String   @id @default(uuid())
-
-  userId       Int
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  userId       String
   location     String
   weatherType  String
   alertMessage String
-
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  @@index([userId])
 }
 
 model MandiPrice {
   priceId        String   @id @default(uuid())
-
   cropName       String
   market         String
   currentPrice   Float
   predictedPrice Float
-
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-
-  @@index([cropName])
-  @@index([market])
 }
 
 model Marketplace {
-  listingId String @id @default(uuid())
-
-  farmerId  Int
-  farmer    User @relation("FarmerListings", fields: [farmerId], references: [id])
-
-  buyerId   Int?
-  buyer     User? @relation("BuyerPurchases", fields: [buyerId], references: [id])
-
+  listingId String   @id @default(uuid())
+  farmerId  String
+  buyerId   String?
   cropId    String
-  crop      Crop @relation(fields: [cropId], references: [cropId], onDelete: Cascade)
-
   quantity  Float
   amount    Float
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([farmerId])
-  @@index([buyerId])
-  @@index([cropId])
 }
 
 model GovernmentScheme {
   schemeId    String   @id @default(uuid())
-
   schemeName  String
   eligibility String
   applyLink   String
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model ExpenseProfit {
   recordId  String   @id @default(uuid())
-
-  farmerId  Int
-  farmer    User     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-
+  farmerId  String
   expense   Float
   income    Float
   profit    Float
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([farmerId])
 }
 
 model EquipmentRental {
   equipmentId   String   @id @default(uuid())
-
-  ownerId       Int
-  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
+  ownerId       String
   equipmentName String
   rentPrice     Float
-  availability  Boolean  @default(true)
-
+  availability  Boolean
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  @@index([ownerId])
 }
 
 model RewardLoan {
   rewardId        String   @id @default(uuid())
-
-  farmerId        Int
-  farmer          User     @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-
-  points          Int      @default(0)
-  loanEligibility Boolean  @default(false)
-  creditScore     Int      @default(0)
-
+  farmerId        String
+  points          Int
+  loanEligibility Boolean
+  creditScore     Int
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-
-  @@index([farmerId])
 }
 
 model CommunityPost {
@@ -240,12 +167,11 @@ model CommunityPost {
   content   String
   imageUrl  String?
   videoUrl  String?
-  farmer    User               @relation(fields: [farmerId], references: [id])
-  comments  CommunityComment[]
-  likes     CommunityLike[]
-
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
+  comments  CommunityComment[]
+  likes     CommunityLike[]
+  farmer    User               @relation(fields: [farmerId], references: [id])
 }
 
 model CommunityComment {
@@ -253,37 +179,34 @@ model CommunityComment {
   postId    String
   farmerId  Int
   comment   String
-  post      CommunityPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
-  farmer    User          @relation(fields: [farmerId], references: [id])
-
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+  farmer    User          @relation(fields: [farmerId], references: [id])
+  post      CommunityPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
 }
 
 model CommunityLike {
   likeId    String        @id @default(uuid())
   postId    String
   farmerId  Int
-  post      CommunityPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
-
   createdAt DateTime      @default(now())
+  post      CommunityPost @relation(fields: [postId], references: [postId], onDelete: Cascade)
 
   @@unique([postId, farmerId])
 }
 
 model Video {
-  videoId     String         @id @default(uuid())
-  farmerId    Int?
-  title       String
-  description String?
-  videoUrl    String
+  videoId      String         @id @default(uuid())
+  farmerId     Int?
+  title        String
+  description  String?
+  videoUrl     String
   thumbnailUrl String?
-  category    String?
-  comments    VideoComment[]
-  likes       VideoLike[]
-
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  category     String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  comments     VideoComment[]
+  likes        VideoLike[]
 }
 
 model VideoComment {
@@ -291,62 +214,57 @@ model VideoComment {
   videoId   String
   farmerId  Int
   comment   String
-  video     Video    @relation(fields: [videoId], references: [videoId], onDelete: Cascade)
-  farmer    User     @relation(fields: [farmerId], references: [id])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  farmer    User     @relation(fields: [farmerId], references: [id])
+  video     Video    @relation(fields: [videoId], references: [videoId], onDelete: Cascade)
 }
 
 model VideoLike {
   likeId    String   @id @default(uuid())
   videoId   String
   farmerId  Int
-  video     Video    @relation(fields: [videoId], references: [videoId], onDelete: Cascade)
-  farmer    User     @relation(fields: [farmerId], references: [id])
-
   createdAt DateTime @default(now())
+  farmer    User     @relation(fields: [farmerId], references: [id])
+  video     Video    @relation(fields: [videoId], references: [videoId], onDelete: Cascade)
 
   @@unique([videoId, farmerId])
 }
 
 model RewardAccount {
-  accountId String @id @default(uuid())
-  farmerId  Int    @unique
-  points    Int    @default(0)
-  farmer    User   @relation(fields: [farmerId], references: [id])
-
+  accountId String   @id @default(uuid())
+  farmerId  Int      @unique
+  points    Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  farmer    User     @relation(fields: [farmerId], references: [id])
 }
 
 model RewardTransaction {
-  transactionId String @id @default(uuid())
+  transactionId String   @id @default(uuid())
   farmerId      Int
   points        Int
   reason        String
   referenceType String?
   referenceId   String?
-  farmer        User   @relation(fields: [farmerId], references: [id])
-
   createdAt     DateTime @default(now())
+  farmer        User     @relation(fields: [farmerId], references: [id])
 }
 
 model LoanApplication {
-  loanId       String          @id @default(uuid())
-  farmerId     Int
-  amount       Float
-  purpose      String
+  loanId         String          @id @default(uuid())
+  farmerId       Int
+  amount         Float
+  purpose        String
   durationMonths Int
-  status       LoanStatus      @default(PENDING)
-  creditScore  Int
-  documentUrl  String?
-  remarks      String?
-  farmer       User            @relation(fields: [farmerId], references: [id])
-  repayments   LoanRepayment[]
-
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  status         LoanStatus      @default(PENDING)
+  creditScore    Int
+  documentUrl    String?
+  remarks        String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  farmer         User            @relation(fields: [farmerId], references: [id])
+  repayments     LoanRepayment[]
 }
 
 model LoanRepayment {
@@ -355,8 +273,8 @@ model LoanRepayment {
   farmerId    Int
   amount      Float
   paidAt      DateTime        @default(now())
-  loan        LoanApplication @relation(fields: [loanId], references: [loanId], onDelete: Cascade)
   farmer      User            @relation(fields: [farmerId], references: [id])
+  loan        LoanApplication @relation(fields: [loanId], references: [loanId], onDelete: Cascade)
 }
 
 enum LoanStatus {

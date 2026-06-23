@@ -9,7 +9,10 @@ const calculateCreditScore = async (farmerId) => {
     where: { farmerId },
   });
 
-  const totalProfit = profitRecords.reduce((sum, record) => sum + record.profit, 0);
+  const totalProfit = profitRecords.reduce(
+    (sum, record) => sum + record.profit,
+    0,
+  );
   const rewardPoints = rewardAccount?.points || 0;
   const rewardScore = Math.min(300, Math.floor(rewardPoints / 2));
   const profitScore = Math.min(250, Math.floor(totalProfit / 1000));
@@ -31,9 +34,11 @@ export const getLoanEligibility = async (req, res) => {
       farmerId,
       creditScore,
       eligible: creditScore >= 550,
-      maxSuggestedAmount: creditScore >= 700 ? 200000 : creditScore >= 550 ? 75000 : 0,
+      maxSuggestedAmount:
+        creditScore >= 700 ? 200000 : creditScore >= 550 ? 75000 : 0,
     });
   } catch (error) {
+    1;
     console.error(error);
     return res.status(500).json({ error: "Failed to check loan eligibility" });
   }
@@ -63,7 +68,8 @@ export const applyLoan = async (req, res) => {
         documentUrl,
         creditScore,
         status: creditScore >= 550 ? "PENDING" : "REJECTED",
-        remarks: creditScore >= 550 ? null : "Credit score is below eligibility limit",
+        remarks:
+          creditScore >= 550 ? null : "Credit score is below eligibility limit",
       },
     });
 
@@ -128,7 +134,9 @@ export const addRepayment = async (req, res) => {
     const amountNumber = Number(amount);
 
     if (!farmerIdNumber || !amountNumber) {
-      return res.status(400).json({ error: "farmerId and amount are required" });
+      return res
+        .status(400)
+        .json({ error: "farmerId and amount are required" });
     }
 
     const repayment = await api.loanRepayment.create({
