@@ -15,8 +15,10 @@ app.use(cors());
 app.use(express.json());
 app.use("/", authRoutes);
 app.use("/", snehaRoutes);
+
 app.use("/", communityRoutes);
 app.use("/", rewardRoutes);
+
 app.use("/", loanRoutes);
 
 app.get("/", (req, res) => {
