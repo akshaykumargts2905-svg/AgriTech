@@ -1,7 +1,6 @@
 import api from "../prisma/config/prisma.js";
 
 const calculateCreditScore = async (farmerId) => {
-<<<<<<< HEAD
   const rewardAccount = await api.rewardAccount.findUnique({
     where: { farmerId },
   });
@@ -19,9 +18,6 @@ const calculateCreditScore = async (farmerId) => {
   const profitScore = Math.min(250, Math.floor(totalProfit / 1000));
 
   return Math.max(300, Math.min(850, 300 + rewardScore + profitScore));
-=======
-  return 500;
->>>>>>> 71949b51380d5e61cd26742f6d45ee754bfa1084
 };
 
 export const getLoanEligibility = async (req, res) => {
@@ -42,7 +38,6 @@ export const getLoanEligibility = async (req, res) => {
         creditScore >= 700 ? 200000 : creditScore >= 550 ? 75000 : 0,
     });
   } catch (error) {
-    1;
     console.error(error);
     return res.status(500).json({ error: "Failed to check loan eligibility" });
   }
