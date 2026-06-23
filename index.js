@@ -300,11 +300,5 @@ app.post("/crop-records/add", async (req, res) => {
   }
 });
 
-// function simpleApiFunction(req, res) {
-//   res.send("This ismy simple api");
-// }
-
-// app.get("/simple-api", simpleApiFunction);
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`server on http://localhost:${PORT}`));
