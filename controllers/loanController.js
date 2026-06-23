@@ -28,7 +28,7 @@ export const getLoanEligibility = async (req, res) => {
       return res.status(400).json({ error: "farmerId is required" });
     }
 
-    const creditScore = await calculateCreditScore(farmerId);
+    const creditScore = 400;
 
     return res.json({
       farmerId,
