@@ -1,20 +1,7 @@
 import api from "../prisma/config/prisma.js";
 
 const calculateCreditScore = async (farmerId) => {
-  const rewardAccount = await api.rewardAccount.findUnique({
-    where: { farmerId },
-  });
-
-  const profitRecords = await api.expenseProfit.findMany({
-    where: { farmerId },
-  });
-
-  const totalProfit = profitRecords.reduce((sum, record) => sum + record.profit, 0);
-  const rewardPoints = rewardAccount?.points || 0;
-  const rewardScore = Math.min(300, Math.floor(rewardPoints / 2));
-  const profitScore = Math.min(250, Math.floor(totalProfit / 1000));
-
-  return Math.max(300, Math.min(850, 300 + rewardScore + profitScore));
+  return 500;
 };
 
 export const getLoanEligibility = async (req, res) => {
@@ -31,7 +18,8 @@ export const getLoanEligibility = async (req, res) => {
       farmerId,
       creditScore,
       eligible: creditScore >= 550,
-      maxSuggestedAmount: creditScore >= 700 ? 200000 : creditScore >= 550 ? 75000 : 0,
+      maxSuggestedAmount:
+        creditScore >= 700 ? 200000 : creditScore >= 550 ? 75000 : 0,
     });
   } catch (error) {
     console.error(error);
@@ -63,7 +51,8 @@ export const applyLoan = async (req, res) => {
         documentUrl,
         creditScore,
         status: creditScore >= 550 ? "PENDING" : "REJECTED",
-        remarks: creditScore >= 550 ? null : "Credit score is below eligibility limit",
+        remarks:
+          creditScore >= 550 ? null : "Credit score is below eligibility limit",
       },
     });
 
@@ -128,7 +117,9 @@ export const addRepayment = async (req, res) => {
     const amountNumber = Number(amount);
 
     if (!farmerIdNumber || !amountNumber) {
-      return res.status(400).json({ error: "farmerId and amount are required" });
+      return res
+        .status(400)
+        .json({ error: "farmerId and amount are required" });
     }
 
     const repayment = await api.loanRepayment.create({

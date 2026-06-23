@@ -13,7 +13,6 @@ import {
 } from "../controllers/communityController.js";
 
 const router = express.Router();
-
 router.get("/posts", getPosts);
 router.get("/post/:id", getPostById);
 router.post("/post/create", createPost);
