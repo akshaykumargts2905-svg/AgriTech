@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import snehaRoutes from "./routes/snehaRoutes.js";
 import communityRoutes from "./routes/communityRoutes.js";
+import equipmentsRoutes from "./routes/equipmentRoutes.js";
 import loanRoutes from "./routes/loanRoutes.js";
 import rewardRoutes from "./routes/rewardRoutes.js";
 import api from "./prisma/config/prisma.js";
@@ -21,6 +22,8 @@ app.use("/", communityRoutes);
 app.use("/", rewardRoutes);
 
 app.use("/", loanRoutes);
+
+app.use("/", equipmentsRoutes);
 
 app.get("/", (req, res) => {
   res.json({
@@ -53,21 +56,6 @@ app.get("/users", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch users",
-    });
-  }
-});
-
-app.get("/equipments", async (req, res) => {
-  try {
-    const equipments = await api.equipmentRental.findMany();
-    res.status(200).json({
-      success: true,
-      data: equipments,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch equipments",
     });
   }
 });
