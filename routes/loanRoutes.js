@@ -6,15 +6,12 @@ import {
   getLoanStatus,
   updateLoanStatus,
 } from "../controllers/loanController.js";
+import { getAuthenticatedUserId } from "../middleware/authCheck.js";
 
 const router = express.Router();
 
-router.get("/loan-status", getLoanStatus);
-router.get("/loan-status/:farmerId", getLoanStatus);
-router.get("/loan-history", getLoanStatus);
-router.get("/loan-history/:farmerId", getLoanStatus);
-router.get("/loan/eligibility", getLoanEligibility);
-router.get("/loan/eligibility/:farmerId", getLoanEligibility);
+router.get("/loan-history", getAuthenticatedUserId, getLoanStatus);
+router.get("/loan/eligibility", getAuthenticatedUserId, getLoanEligibility);
 router.post("/loan/apply", applyLoan);
 router.post("/loan/:loanId/repayment", addRepayment);
 router.patch("/loan/:loanId/status", updateLoanStatus);

@@ -22,7 +22,7 @@ const calculateCreditScore = async (farmerId) => {
 
 export const getLoanEligibility = async (req, res) => {
   try {
-    const farmerId = Number(req.params.farmerId || req.query.farmerId);
+    const farmerId = req.id;
 
     if (!farmerId) {
       return res.status(400).json({ error: "farmerId is required" });
@@ -84,7 +84,7 @@ export const applyLoan = async (req, res) => {
 
 export const getLoanStatus = async (req, res) => {
   try {
-    const farmerId = Number(req.params.farmerId || req.query.farmerId);
+    const farmerId = req.id;
 
     if (!farmerId) {
       return res.status(400).json({ error: "farmerId is required" });

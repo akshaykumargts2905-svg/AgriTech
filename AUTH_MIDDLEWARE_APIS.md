@@ -7,11 +7,13 @@ Middleware location: [middleware/authCheck.js](middleware/authCheck.js)
 ## Should require auth (user-specific or state-changing)
 
 ### Auth / Profile — [routes/authRoutes.js](routes/authRoutes.js)
-- `GET /profile`
-- `POST /profile/create`
+
+- `GET /profile` --> added
+- `POST /profile/create` --> added
 - `POST /profile/update`
 
 ### Notifications & Admin Writes — [routes/snehaRoutes.js](routes/snehaRoutes.js)
+
 - `GET /notifications`
 - `POST /notification/read`
 - `POST /notification/send`
@@ -19,17 +21,15 @@ Middleware location: [middleware/authCheck.js](middleware/authCheck.js)
 - `POST /farming-tip/add`
 
 ### Loans — [routes/loanRoutes.js](routes/loanRoutes.js) — all routes
-- `GET /loan-status`
-- `GET /loan-status/:farmerId`
-- `GET /loan-history`
-- `GET /loan-history/:farmerId`
-- `GET /loan/eligibility`
-- `GET /loan/eligibility/:farmerId`
+
+- `GET /loan-history/:farmerId` --> added
+- `GET /loan/eligibility`. --> added
 - `POST /loan/apply`
 - `POST /loan/:loanId/repayment`
 - `PATCH /loan/:loanId/status`
 
 ### Rewards — [routes/rewardRoutes.js](routes/rewardRoutes.js)
+
 - `GET /reward-points`
 - `GET /reward-points/:farmerId`
 - `GET /reward-history`
@@ -38,6 +38,7 @@ Middleware location: [middleware/authCheck.js](middleware/authCheck.js)
 - `POST /reward/claim`
 
 ### Community — [routes/communityRoutes.js](routes/communityRoutes.js)
+
 - `POST /post/create`
 - `POST /post/comment`
 - `POST /post/like`
@@ -46,6 +47,7 @@ Middleware location: [middleware/authCheck.js](middleware/authCheck.js)
 - `POST /video/comment`
 
 ### Equipment & Crop (inline in [index.js](index.js))
+
 - `POST /equipments/add`
 - `POST /crop/add`
 - `POST /crop/update`
@@ -66,7 +68,7 @@ Middleware location: [middleware/authCheck.js](middleware/authCheck.js)
 
 ---
 
-## ⚠️ Known Bug in Middleware
+## ⚠️ Known Bug in Middleware [ FIXED ]
 
 [middleware/authCheck.js](middleware/authCheck.js) uses `jwt.verify(...)` without importing `jsonwebtoken`. It will throw `ReferenceError: jwt is not defined` on every request. Fix before wiring it in:
 

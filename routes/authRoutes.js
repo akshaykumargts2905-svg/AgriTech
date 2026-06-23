@@ -10,12 +10,11 @@ import {
   updateProfile,
   verifyOtp,
 } from "../controllers/authController.js";
+import { getAuthenticatedUserId } from "../middleware/authCheck.js";
 
 const router = express.Router();
 
-//Hey i changed my name
-
-router.get("/profile", getProfile);
+router.get("/profile", getAuthenticatedUserId, getProfile);
 router.get("/user/:id", getUserById);
 
 router.post("/signup", signup);
@@ -26,7 +25,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
 
-router.post("/profile/create", createProfile);
-router.post("/profile/update", updateProfile);
+router.post("/profile/create", getAuthenticatedUserId, createProfile);
+router.post("/profile/update", getAuthenticatedUserId, updateProfile);
 
 export default router;

@@ -144,7 +144,7 @@ export const login = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const userId = getAuthenticatedUserId(req);
+    const userId = req.id;
 
     if (!userId) {
       return res.status(401).json({
@@ -331,7 +331,7 @@ export const createProfile = signup;
 
 export const updateProfile = async (req, res) => {
   try {
-    const userId = getAuthenticatedUserId(req);
+    const userId = req.id;
 
     if (!userId) {
       return res.status(401).json({

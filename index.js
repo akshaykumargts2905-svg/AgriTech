@@ -8,6 +8,7 @@ import communityRoutes from "./routes/communityRoutes.js";
 import loanRoutes from "./routes/loanRoutes.js";
 import rewardRoutes from "./routes/rewardRoutes.js";
 import api from "./prisma/config/prisma.js";
+import { getAuthenticatedUserId } from "./middleware/authCheck.js";
 
 const app = express();
 
@@ -199,11 +200,15 @@ app.get("/crop-records", async (req, res) => {
 });
 
 // GET CROP HISTORY
-app.get("/crop-history", async (req, res) => {
+app.get("/crop-history", getAuthenticatedUserId, async (req, res) => {
+  const userid = req.id;
   try {
     const history = await api.crop.findMany({
       orderBy: {
         createdAt: "desc",
+      },
+      where: {
+        userId: userid,
       },
     });
 
