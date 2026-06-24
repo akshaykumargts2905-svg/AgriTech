@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 export const getAuthenticatedUserId = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -11,7 +13,7 @@ export const getAuthenticatedUserId = (req, res, next) => {
       token,
       process.env.JWT_SECRET || "agritech-secret",
     );
-    req.userId = decoded.userId;
+    req.id = decoded.userId;
     next();
   } catch (e) {
     return res.send(`Not authenticated please login ${e.message}`);
