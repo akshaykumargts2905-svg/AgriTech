@@ -10,7 +10,7 @@ Middleware location: [middleware/authCheck.js](middleware/authCheck.js)
 
 - `GET /profile` --> added
 - `POST /profile/create` --> added
-- `POST /profile/update`
+- `POST /profile/update` --> added
 
 ### Notifications & Admin Writes — [routes/snehaRoutes.js](routes/snehaRoutes.js)
 

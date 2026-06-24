@@ -12,8 +12,8 @@ const router = express.Router();
 
 router.get("/loan-history", getAuthenticatedUserId, getLoanStatus);
 router.get("/loan/eligibility", getAuthenticatedUserId, getLoanEligibility);
-router.post("/loan/apply", applyLoan);
-router.post("/loan/:loanId/repayment", addRepayment);
-router.patch("/loan/:loanId/status", updateLoanStatus);
+router.post("/loan/apply", getAuthenticatedUserId, applyLoan);
+router.post("/loan/:loanId/repayment", getAuthenticatedUserId, addRepayment);
+router.patch("/loan/:loanId/status", getAuthenticatedUserId, updateLoanStatus);
 
 export default router;

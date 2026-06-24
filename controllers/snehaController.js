@@ -29,9 +29,16 @@ export const addWeather = async (req, res) => {
   try {
     const { location, temperature, condition, humidity, advice } = req.body;
 
-    if (!location || temperature === undefined || !condition || humidity === undefined || !advice) {
+    if (
+      !location ||
+      temperature === undefined ||
+      !condition ||
+      humidity === undefined ||
+      !advice
+    ) {
       return res.status(400).json({
-        error: "location, temperature, condition, humidity, and advice are required",
+        error:
+          "location, temperature, condition, humidity, and advice are required",
       });
     }
 
@@ -124,7 +131,7 @@ export const addFarmingTip = async (req, res) => {
 
 export const getNotifications = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const userId = req.id;
 
     const notifications = await api.notification.findMany({
       where: userId

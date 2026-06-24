@@ -1,3 +1,5 @@
+import api from "../prisma/config/prisma.js";
+
 export const getEquipments = async (req, res) => {
   try {
     const equipments = await api.equipmentRental.findMany();
