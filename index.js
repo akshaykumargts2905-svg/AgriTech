@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import snehaRoutes from "./routes/snehaRoutes.js";
 import communityRoutes from "./routes/communityRoutes.js";
 import equipmentsRoutes from "./routes/equipmentRoutes.js";
+import marketplaceRoutes from "./routes/marketplaceRoutes.js";
 import loanRoutes from "./routes/loanRoutes.js";
 import rewardRoutes from "./routes/rewardRoutes.js";
 import api from "./prisma/config/prisma.js";
@@ -24,6 +25,8 @@ app.use("/", rewardRoutes);
 app.use("/", loanRoutes);
 
 app.use("/", equipmentsRoutes);
+
+app.use("/", marketplaceRoutes);
 
 app.get("/", (req, res) => {
   res.json({

@@ -1,0 +1,137 @@
+export const getproducts = async (req, res) => {
+  try {
+    const products = await api.product.findMany({
+      include: {
+        crops: true,
+        farmers: true,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+    });
+  }
+};
+
+export const getproductsbyid = async (req, res) => {
+  try {
+    const product = await api.product.findUnique({
+      where: {
+        productId: req.params.id,
+      },
+    });
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch product",
+    });
+  }
+};
+
+export const getproductsSearchByName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const products = await api.product.findMany({
+      where: {
+        productName: {
+          contains: name,
+          mode: "insensitive",
+        },
+      },
+    });
+    if (products.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to search products",
+    });
+  }
+};
+
+export const getproductsAdd = async (req, res) => {
+  try {
+    const { ownerId, productName, productPrice, cropId } = req.body;
+    if (!ownerId || !productName || !productPrice) {
+      return res.status(400).json({
+        success: false,
+        error: "ownerId, productName, and productPrice are required",
+      });
+    }
+    const product = await api.product.create({
+      data: {
+        ownerId: productName,
+        productPrice: parseFloat(productPrice),
+        cropId: Number(cropId),
+      },
+    });
+    return res.status(201).json({
+      success: true,
+      message: "Product added successfully",
+      data: product,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add product",
+    });
+  }
+};
+
+export const getproductsUpdate = async (req, res) => {
+  try {
+    const { productId, productName, productPrice, cropId } = req.body;
+    if (!productId || !productName || !productPrice) {
+      return res.status(400).json({
+        success: false,
+        error: "productId, productName, and productPrice are required",
+      });
+    }
+    const product = await api.product.update({
+      where: {
+        productId: productId,
+      },
+      data: {
+        productName: productName,
+        productPrice: parseFloat(productPrice),
+        cropId: Number(cropId),
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: product,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update product",
+    });
+  }
+};
