@@ -15,4 +15,5 @@ router.get("/loan/eligibility", getAuthenticatedUserId, getLoanEligibility);
 router.post("/loan/apply", getAuthenticatedUserId, applyLoan);
 router.post("/loan/:loanId/repayment", getAuthenticatedUserId, addRepayment);
 router.patch("/loan/:loanId/status", getAuthenticatedUserId, updateLoanStatus);
+
 export default router;
