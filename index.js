@@ -10,6 +10,7 @@ import loanRoutes from "./routes/loanRoutes.js";
 import rewardRoutes from "./routes/rewardRoutes.js";
 import api from "./prisma/config/prisma.js";
 import { getAuthenticatedUserId } from "./middleware/authCheck.js";
+import cropRoutes from "./routes/cropRoutes.js";
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.use("/", rewardRoutes);
 app.use("/", loanRoutes);
 
 app.use("/", equipmentsRoutes);
+
+app.use("/", cropRoutes);
 
 app.get("/", (req, res) => {
   res.json({

@@ -1,6 +1,13 @@
 export const getCrop = async (req, res) => {
   try {
-    const crops = await api.crop.findMany();
+    const userId = req.id;
+
+    const crops = await api.crop.findMany({
+      where: {
+        userId,
+      },
+    });
+
     res.json(crops);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch crops" });
@@ -9,9 +16,12 @@ export const getCrop = async (req, res) => {
 
 export const getCropById = async (req, res) => {
   try {
-    const crop = await api.crop.findUnique({
+    const userId = req.id;
+
+    const crop = await api.crop.findFirst({
       where: {
         cropId: req.params.id,
+        userId,
       },
     });
 
@@ -27,7 +37,13 @@ export const getCropById = async (req, res) => {
 
 export const getCropRecords = async (req, res) => {
   try {
-    const records = await api.expenseProfit.findMany();
+    const userId = req.id;
+
+    const records = await api.expenseProfit.findMany({
+      where: {
+        farmerId: userId,
+      },
+    });
 
     res.json(records);
   } catch (error) {
@@ -36,14 +52,15 @@ export const getCropRecords = async (req, res) => {
 };
 
 export const getCropHistory = async (req, res) => {
-  const userid = req.id;
   try {
+    const userId = req.id;
+
     const history = await api.crop.findMany({
+      where: {
+        userId,
+      },
       orderBy: {
         createdAt: "desc",
-      },
-      where: {
-        userId: userid,
       },
     });
 
@@ -55,8 +72,11 @@ export const getCropHistory = async (req, res) => {
 
 export const getCropName = async (req, res) => {
   try {
+    const userId = req.id;
+
     const crops = await api.crop.findMany({
       where: {
+        userId,
         cropName: {
           equals: req.params.cropName,
           mode: "insensitive",
@@ -76,11 +96,13 @@ export const getCropName = async (req, res) => {
 
 export const addCrop = async (req, res) => {
   try {
-    const { userId, cropName, quantity, price, status } = req.body;
+    const userId = req.id;
+
+    const { cropName, quantity, price, status } = req.body;
 
     const crop = await api.crop.create({
       data: {
-        userId: Number(userId),
+        userId,
         cropName,
         quantity: Number(quantity),
         price: Number(price),
@@ -96,7 +118,20 @@ export const addCrop = async (req, res) => {
 
 export const updateCrop = async (req, res) => {
   try {
+    const userId = req.id;
+
     const { cropId, cropName, quantity, price, status } = req.body;
+
+    const existingCrop = await api.crop.findFirst({
+      where: {
+        cropId,
+        userId,
+      },
+    });
+
+    if (!existingCrop) {
+      return res.status(404).json({ error: "Crop not found" });
+    }
 
     const crop = await api.crop.update({
       where: {
@@ -118,11 +153,13 @@ export const updateCrop = async (req, res) => {
 
 export const addCropRecords = async (req, res) => {
   try {
-    const { farmerId, expense, income, profit } = req.body;
+    const farmerId = req.id;
+
+    const { expense, income, profit } = req.body;
 
     const record = await api.expenseProfit.create({
       data: {
-        farmerId: Number(farmerId),
+        farmerId,
         expense: Number(expense),
         income: Number(income),
         profit: Number(profit),
